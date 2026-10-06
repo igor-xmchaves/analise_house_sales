@@ -1,0 +1,10 @@
+medida,valor,unidade
+n_vendas,21613,vendas
+r2,0.45291473913777447,proporção
+r2_ajustado,0.45288942400840226,proporção
+sqr,1.0905426920844428e+16,R$²
+erro_residual,710368.84192354,R$
+estatistica_f,17891.069505473984,sem unidade
+gl_modelo,1,graus de liberdade
+gl_residuo,21611,graus de liberdade
+valor_p_f,"< 0,001",sem unidade

@@ -1,0 +1,8 @@
+{
+  "fonte": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?%40dataInicial=%2704-25-2014%27&%40dataFinalCotacao=%2705-27-2015%27&%24format=json&%24orderby=dataHoraCotacao&%24top=10000",
+  "serie": "cotacaoVenda",
+  "boletim": "fechamento",
+  "inicio": "2014-04-25",
+  "fim": "2015-05-27",
+  "linhas": 275
+}
