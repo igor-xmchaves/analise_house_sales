@@ -149,6 +149,9 @@ activemq-data/
 # SageMath parsed files
 *.sage.py
 
+.tmp
+.tmp/
+
 # Environments
 .env
 .envrc
@@ -218,3 +221,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Planejamento local
+/ROADMAP.md

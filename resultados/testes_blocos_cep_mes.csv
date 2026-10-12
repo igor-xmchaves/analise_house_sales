@@ -1,0 +1,13 @@
+teste|hipotese_nula|termos_testados|estatistica_F_cluster_id|gl_numerador|gl_denominador|valor_p|nota|cenario
+Interação área x grade|Todos os incrementos das inclinações de área por grade são zero.|7|20.60342708737408|7.0|21435.0|8.288801240019228e-28|inferência agrupada por id|sem_CEP_sem_mes
+Efeitos mensais|Todos os efeitos mensais são simultaneamente zero.|0||0.0|||bloco ausente nesta especificação|sem_CEP_sem_mes
+CEP categórico|Todos os contrastes de CEP são simultaneamente zero.|0||0.0|||bloco ausente nesta especificação|sem_CEP_sem_mes
+Interação área x grade|Todos os incrementos das inclinações de área por grade são zero.|7|20.686070600637702|7.0|21435.0|6.280135440934585e-28|inferência agrupada por id|sem_CEP_com_mes
+Efeitos mensais|Todos os efeitos mensais são simultaneamente zero.|12|11.086687711514168|12.0|21435.0|1.803409857367578e-22|inferência agrupada por id|sem_CEP_com_mes
+CEP categórico|Todos os contrastes de CEP são simultaneamente zero.|0||0.0|||bloco ausente nesta especificação|sem_CEP_com_mes
+Interação área x grade|Todos os incrementos das inclinações de área por grade são zero.|7|31.03270262559672|7.0|21435.0|4.306732895231604e-43|inferência agrupada por id|com_CEP_sem_mes
+Efeitos mensais|Todos os efeitos mensais são simultaneamente zero.|0||0.0|||bloco ausente nesta especificação|com_CEP_sem_mes
+CEP categórico|Todos os contrastes de CEP são simultaneamente zero.|69|127.12034754091273|69.0|21435.0|0.0|inferência agrupada por id|com_CEP_sem_mes
+Interação área x grade|Todos os incrementos das inclinações de área por grade são zero.|7|31.19293863927674|7.0|21435.0|2.5033295505803513e-43|inferência agrupada por id|com_CEP_com_mes
+Efeitos mensais|Todos os efeitos mensais são simultaneamente zero.|12|16.29563262644862|12.0|21435.0|4.02964111093779e-35|inferência agrupada por id|com_CEP_com_mes
+CEP categórico|Todos os contrastes de CEP são simultaneamente zero.|69|128.60873576874877|69.0|21435.0|0.0|inferência agrupada por id|com_CEP_com_mes

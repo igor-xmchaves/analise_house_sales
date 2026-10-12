@@ -1,0 +1,5 @@
+modelo|vendas|escala_resposta|hipotese_nula_jb|jarque_bera|p_jb|valor_p_jb|decisao_jb_5pct|hipotese_nula_bp|breusch_pagan_koenker|p_bp|valor_p_bp|decisao_bp_5pct|assimetria_residual|curtose_residual
+sem_CEP_sem_mes|21613|US$ nominal|resíduos com distribuição normal|698237.3025156632|0.0|< 0,001|rejeitada|variância constante (homocedasticidade)|6167.916802335204|0.0|< 0,001|rejeitada|2.5778006292253686|30.363705035988428
+sem_CEP_com_mes|21613|US$ nominal|resíduos com distribuição normal|706686.9065112144|0.0|< 0,001|rejeitada|variância constante (homocedasticidade)|6169.817863056377|0.0|< 0,001|rejeitada|2.581360803028881|30.533283223734
+com_CEP_sem_mes|21613|US$ nominal|resíduos com distribuição normal|1992358.3502726038|0.0|< 0,001|rejeitada|variância constante (homocedasticidade)|5230.6397759059355|0.0|< 0,001|rejeitada|3.4133622102435415|49.53811123127664
+com_CEP_com_mes|21613|US$ nominal|resíduos com distribuição normal|2037152.3073875068|0.0|< 0,001|rejeitada|variância constante (homocedasticidade)|5232.404702434177|0.0|< 0,001|rejeitada|3.4307684209361997|50.06442820355286

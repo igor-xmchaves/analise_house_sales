@@ -1,0 +1,12 @@
+# Ambiente de referência: Python 3.13 (compatível com Python 3.12+).
+# Bibliotecas da análise e dos modelos estatísticos.
+numpy==2.5.3
+pandas==2.3.3
+matplotlib==3.11.2
+seaborn==0.13.2
+scipy==1.18.1
+statsmodels==0.15.0
+
+# Exibição dos resultados e kernel para executar o notebook.
+ipython==9.17.1
+ipykernel==7.4.0
