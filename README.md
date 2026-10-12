@@ -5,48 +5,80 @@
 
 ## Pergunta e objetivo
 
-O projeto estuda a associação entre a área habitável e o preço de venda de imóveis de King County, nos Estados Unidos, entre maio de 2014 e maio de 2015. A análise é observacional: as associações estimadas não demonstram causalidade.
+O projeto estuda a associação entre a área habitável e o preço de venda de imóveis de King County, nos Estados Unidos, entre maio de 2014 e maio de 2015. A análise é observacional: os coeficientes descrevem associações na amostra e não demonstram causalidade.
 
-## Dataset e variáveis
+## Dados, unidades e variáveis
 
-A base [House Sales in King County, USA](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction) contém 21.613 vendas e 21.436 imóveis distintos. Cada linha representa uma venda, portanto um mesmo imóvel pode aparecer mais de uma vez. O preço `price` permanece em dólares americanos (USD), moeda original das transações; não há conversão cambial. A área habitável `sqft_living` é convertida para m² pelo fator **1 sqft = 0,09290304 m²**.
+A base [House Sales in King County, USA](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction) reúne **21.613 vendas de 21.436 imóveis distintos**. Cada linha representa uma venda; por isso, um mesmo imóvel pode aparecer mais de uma vez. A resposta é `price`, mantida em dólares americanos nominais (USD), moeda original das transações. A área habitável `sqft_living` é convertida para m² pelo fator **1 sqft = 0,09290304 m²**. Não se aplica conversão cambial.
 
-| Grupo | Variáveis originais | Descrição |
+| Grupo | Variáveis | Papel na análise |
 | --- | --- | --- |
-| Identificação e tempo | `id`, `date` | Imóvel e data da venda |
-| Venda | `price` | Preço da transação em USD |
-| Características | `bedrooms`, `bathrooms`, `floors`, `waterfront`, `view`, `condition`, `grade`, `yr_built`, `yr_renovated` | Cômodos, pavimentos, atributos, qualidade e anos de construção/reforma |
-| Áreas | `sqft_living`, `sqft_lot`, `sqft_above`, `sqft_basement`, `sqft_living15`, `sqft_lot15` | Áreas habitáveis, do terreno, acima/abaixo do solo e referências de imóveis próximos |
-| Localização | `zipcode`, `lat`, `long` | CEP e coordenadas geográficas |
+| Identificação e tempo | `id`, `date` | Identificar imóveis, revendas e período da venda |
+| Venda | `price` | Resposta em USD |
+| Características | `bedrooms`, `bathrooms`, `floors`, `waterfront`, `view`, `condition`, `grade`, `yr_built`, `yr_renovated` | Descrição dos imóveis; algumas entram nas especificações ampliadas |
+| Áreas | `sqft_living`, `sqft_lot`, `sqft_above`, `sqft_basement`, `sqft_living15`, `sqft_lot15` | Áreas originais em pés quadrados; `sqft_living` gera `area` em m² |
+| Localização | `zipcode`, `lat`, `long` | Latitude no MRLM de referência; CEP e longitude em extensões |
 
-Nos modelos principais, `preco` (cópia de `price`) é a resposta; `area`, `grade`, `bathrooms`, `yr_built` e `lat` são explicativas do MRLM. Também são analisadas respostas logarítmicas, `grade` categórica, interação área × `grade` e extensões com `long` e `zipcode`. `id` define grupos na inferência e validação; `date` permite examinar controles mensais. `condition` e `grade` representam características distintas.
+`id` também define os grupos da inferência e da validação. `date` permite examinar efeitos mensais. `grade` representa qualidade construtiva; `condition` representa o estado de conservação, conceito distinto.
 
-## Especificações e inferência
+## Preparação, modelos e inferência
 
-O **MRLS** estima `preco ~ area`. O **MRLM** acrescenta qualidade construtiva, banheiros, ano de construção e latitude. As especificações são ajustadas por mínimos quadrados ordinários; a inferência principal usa covariância agrupada por `id`, considerando vendas repetidas do mesmo imóvel. HC3 é apresentada como análise de sensibilidade à heterocedasticidade. A validação compara previsões por grupos de imóveis e por período.
+A auditoria verifica ausências, datas, duplicatas exatas e a validade de preço e área. Revendas não são tratadas como duplicatas apenas por compartilharem `id`; registros extremos que atendem aos critérios de auditoria permanecem na análise. As especificações principais usam as mesmas 21.613 vendas. Antes do ajuste, o notebook verifica os domínios usados, a positividade do preço nos modelos logarítmicos e as condições da matriz de desenho, evitando a exclusão silenciosa de linhas.
 
-## Resultados obtidos
+Os modelos são ajustados por **mínimos quadrados ordinários (MQO)**, com intercepto, usando `statsmodels`. A análise inclui:
 
-| Modelo | R² na amostra |
-| --- | ---: |
-| MRLS: preço ~ área | 0,493 |
-| MRLM: área, grade numérica, banheiros, ano e latitude | 0,643 |
-| MRLM com grade categórica | 0,679 |
+- MRLS: `price ~ area`;
+- MRLM de referência: `price ~ area + grade + bathrooms + yr_built + lat`;
+- alternativas com `grade` categórica e respostas `ln(price / 1 US$)`;
+- extensões com interação entre área e `grade`, longitude, CEP categórico e efeitos mensais.
 
-No MRLM, a inclinação associada à área é de aproximadamente **US$ 1.796 por m²**, com intervalo de 95% agrupado por imóvel de **US$ 1.625 a US$ 1.966**. Na validação por imóvel, o modelo ampliado com interação e localização teve RMSE médio de **US$ 166,9 mil**, comparado a **US$ 218,9 mil** no MRLM linear de referência. Essa comparação é exploratória e não escolhe automaticamente um modelo final.
+A inferência principal usa covariância agrupada por `id`, para acomodar dependência entre revendas do mesmo imóvel, e pressupõe independência entre imóveis. HC3 é apresentada como análise de sensibilidade à heterocedasticidade sob independência entre vendas; ela não resolve a dependência entre revendas. As tabelas apresentam coeficientes, intervalos de confiança, testes, R², R² ajustado e erro padrão residual. Os intervalos de predição individuais ainda dependem da variância residual OLS e sua cobertura nominal não é garantida quando há heterocedasticidade.
 
-## Arquitetura do projeto
+## Resultados na amostra
+
+| Modelo em USD | R² | R² ajustado |
+| --- | ---: | ---: |
+| MRLS: preço ~ área | 0,493 | 0,493 |
+| MRLM: área, `grade` numérica, banheiros, ano e latitude | 0,643 | 0,643 |
+| MRLM com `grade` categórica | 0,679 | 0,679 |
+
+No MRLS, a reta estimada é aproximadamente:
+
+```text
+preço estimado (USD) = -43.580,74 + 3.020,61 × área (m²)
+```
+
+A correlação de Pearson entre área e preço é aproximadamente **0,702**. Na reta, uma diferença de 10 m² corresponde a cerca de **US$ 30,2 mil** nos valores ajustados. No MRLM, a inclinação condicional da área é aproximadamente **US$ 1.796/m²**, com intervalo de 95% agrupado por imóvel de **US$ 1.625 a US$ 1.966/m²**; 10 m² correspondem a cerca de US$ 18,0 mil, mantendo as demais variáveis constantes. A diferença entre as inclinações simples e múltipla mostra que a estimativa depende da especificação e das características que variam em conjunto. Ela não decompõe causalmente o preço. A inclinação representa uma associação com área, não o preço médio por m² de um imóvel. O intercepto do MRLS corresponde a área zero, fora da faixa observada, e não tem interpretação prática direta.
+
+O R² descreve a parcela da variabilidade da resposta representada pelo ajuste **na amostra**; não é taxa de acerto nem medida de efeito causal. O R² dos modelos com resposta logarítmica pertence a outra escala e não deve ser comparado diretamente ao R² em USD. O erro padrão residual mede a dispersão dos resíduos na escala da resposta; não equivale ao erro médio absoluto nem a uma margem fixa para cada venda.
+
+## Diagnósticos, interpretação e limites
+
+Os gráficos de resíduos e Q-Q são acompanhados pelos testes de Jarque–Bera, Breusch–Pagan/Koenker, VIF, condicionamento da matriz, alavancagem e distância de Cook. A transformação logarítmica não elimina todos os desvios: no MRLS em log, Jarque–Bera não rejeita normalidade a 5%, mas Breusch–Pagan/Koenker indica variância não constante; no MRLM em log, ambos os testes rejeitam suas hipóteses nulas. Com mais de 21 mil vendas, os valores-p são lidos junto dos gráficos e da magnitude dos desvios. O valor 5 usado para inspecionar VIF é uma referência, não um limite universal.
+
+As sinalizações por resíduo studentizado, alavancagem e Cook indicam casos para investigação, não justificam exclusão automática. As vendas sinalizadas permanecem nos ajustes. Em particular, `grade = 1` tem apenas uma venda; seu indicador categórico produz alavancagem próxima de 1 e deixa alguns diagnósticos de influência instáveis ou indefinidos.
+
+Na interpretação dos coeficientes e cenários:
+
+- `grade` numérica supõe uma associação linear e uniforme por ponto da escala ordinal; a versão categórica compara os níveis com `grade = 7` e não impõe essa tendência;
+- `bathrooms` admite contagens fracionárias, e o ano de construção compara imóveis distintos — não mede o efeito de envelhecimento de uma mesma propriedade;
+- latitude representa apenas parte da localização. Permanecer dentro da faixa individual observada de cada preditora não garante que uma combinação de características esteja representada na amostra;
+- nos modelos logarítmicos, `100 × (exp(coeficiente × variação) − 1)` expressa a variação percentual associada à média geométrica condicional. Exponenciar a predição em log não recupera automaticamente a média aritmética do preço; a retransformação usa correção de Duan e é descrita no notebook.
+
+A validação compara todos os candidatos nas mesmas partições: cinco divisões por grupo de imóveis e uma separação temporal que retira do treino as vendas anteriores dos imóveis presentes no teste. O modelo com interação e localização teve RMSE médio de **US$ 166,9 mil** nas cinco partições por imóvel e **US$ 173,9 mil** na partição temporal; o MRLM linear de referência teve, respectivamente, **US$ 218,9 mil** e **US$ 225,3 mil**. A seleção e as comparações são exploratórias: elas não escolhem automaticamente um modelo final, e a validação apresentada não é um teste independente posterior à seleção entre todos os candidatos.
+
+## Estrutura do projeto
 
 ```text
 analise_house_sales/
 ├── house_sales.ipynb   análise, modelos, diagnósticos e validação
 ├── data/               base de vendas
-├── resultados/         17 tabelas CSV com delimitador | e 2 gráficos PNG
+├── resultados/         17 tabelas CSV (delimitador |) e 2 gráficos PNG
 ├── requirements.txt    dependências Python
-└── README.md           relatório breve e instruções
+└── README.md           resumo e instruções
 ```
 
-O fluxo do notebook é: leitura → auditoria e preparação → análise descritiva → modelagem → diagnósticos e validação → apresentação e exportação. As análises complementares são mostradas no notebook, sem arquivos separados. Os gráficos exportados são `validacao_grupos_temporal.png` e `diagnosticos_comparacao_cep_mes.png`.
+O notebook documenta as fórmulas, as decisões de tratamento e a interpretação das análises. Funções de apoio centralizam os ajustes, a organização das tabelas e as exportações para `resultados/`. Os gráficos exportados são `validacao_grupos_temporal.png` e `diagnosticos_comparacao_cep_mes.png`.
 
 ## Como executar
 
@@ -57,4 +89,4 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Execute as células em ordem. O arquivo `data/kc_house_data.csv` acompanha o projeto; caso esteja ausente, o notebook tenta obtê-lo no Kaggle e exige acesso à internet.
+Execute as células em ordem. O arquivo `data/kc_house_data.csv` acompanha o projeto; se estiver ausente, o notebook tenta obtê-lo no Kaggle e precisa de acesso à internet.
