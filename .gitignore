@@ -151,6 +151,7 @@ activemq-data/
 
 .tmp
 .tmp/
+output/
 
 # Environments
 .env
