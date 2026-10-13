@@ -56,7 +56,7 @@ O R² descreve a parcela da variabilidade da resposta representada pelo ajuste *
 
 Os gráficos de resíduos e Q-Q são acompanhados pelos testes de Jarque–Bera, Breusch–Pagan/Koenker, VIF, condicionamento da matriz, alavancagem e distância de Cook. A transformação logarítmica não elimina todos os desvios: no MRLS em log, Jarque–Bera não rejeita normalidade a 5%, mas Breusch–Pagan/Koenker indica variância não constante; no MRLM em log, ambos os testes rejeitam suas hipóteses nulas. Com mais de 21 mil vendas, os valores-p são lidos junto dos gráficos e da magnitude dos desvios. O valor 5 usado para inspecionar VIF é uma referência, não um limite universal.
 
-As sinalizações por resíduo studentizado, alavancagem e Cook indicam casos para investigação, não justificam exclusão automática. As vendas sinalizadas permanecem nos ajustes. Em particular, `grade = 1` tem apenas uma venda; seu indicador categórico produz alavancagem próxima de 1 e deixa alguns diagnósticos de influência instáveis ou indefinidos.
+As sinalizações por resíduo studentizado, alavancagem e Cook indicam casos para investigação, não justificam exclusão automática. As vendas sinalizadas permanecem nos ajustes oficiais. A seção 19 também compara os coeficientes após retirar apenas o Top 3 de Cook e após retirar todas as vendas sinalizadas; ambas são reestimações diagnósticas e não alteram a amostra principal. Em particular, `grade = 1` tem apenas uma venda; seu indicador categórico produz alavancagem próxima de 1 e deixa alguns diagnósticos de influência instáveis ou indefinidos.
 
 Na interpretação dos coeficientes e cenários:
 
@@ -73,12 +73,12 @@ A validação compara todos os candidatos nas mesmas partições: cinco divisõe
 analise_house_sales/
 ├── house_sales.ipynb   análise, modelos, diagnósticos e validação
 ├── data/               base de vendas
-├── resultados/         17 tabelas CSV (delimitador |) e 2 gráficos PNG
+├── resultados/         20 tabelas CSV (delimitador |) e 3 gráficos PNG
 ├── requirements.txt    dependências Python
 └── README.md           resumo e instruções
 ```
 
-O notebook documenta as fórmulas, as decisões de tratamento e a interpretação das análises. Funções de apoio centralizam os ajustes, a organização das tabelas e as exportações para `resultados/`. Os gráficos exportados são `validacao_grupos_temporal.png` e `diagnosticos_comparacao_cep_mes.png`.
+O notebook documenta as fórmulas, as decisões de tratamento e a interpretação das análises. Funções de apoio centralizam os ajustes, a organização das tabelas e as exportações para `resultados/`. Os gráficos exportados são `validacao_grupos_temporal.png`, `diagnosticos_comparacao_cep_mes.png` e `09_sensibilidade_top3_cook.png`. As tabelas de sensibilidade são `sensibilidade_top3_cook.csv`, `observacoes_top3_cook.csv` e `sensibilidade_sinalizados.csv`.
 
 ## Como executar
 
